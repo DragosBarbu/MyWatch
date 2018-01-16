@@ -17,6 +17,8 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import java.security.Permission;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -46,7 +48,9 @@ public class MainActivity extends AppCompatActivity {
         });
 
         if (savedInstanceState == null) {
-            requestPermission();
+            requestPermission(Manifest.permission.WRITE_CALENDAR);
+            requestPermission(Manifest.permission.READ_CALENDAR);
+
             getSupportFragmentManager().beginTransaction().replace(R.id.container, MyPreferenceFragment.newInstance()).commit();
         }
     }
@@ -72,22 +76,24 @@ public class MainActivity extends AppCompatActivity {
                 String permission = permissions[i];
                 int grantResult = grantResults[i];
                 if (permission.equals(Manifest.permission.WRITE_CALENDAR) && grantResult != PackageManager.PERMISSION_GRANTED)
-                    requestPermission();
+                    requestPermission(Manifest.permission.WRITE_CALENDAR);
+                if (permission.equals(Manifest.permission.READ_CALENDAR) && grantResult != PackageManager.PERMISSION_GRANTED)
+                    requestPermission(Manifest.permission.READ_CALENDAR);
             }
         }
     }
 
-    private void requestPermission() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_CALENDAR) != PackageManager.PERMISSION_GRANTED) {
+    private void requestPermission(final String permission) {
+        if (ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
             // Should we show an explanation?
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_CALENDAR)) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, permission)) {
                 new AlertDialog.Builder(MainActivity.this)
                         .setMessage(R.string.permission_explanation)
                         .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 ActivityCompat.requestPermissions(MainActivity.this,
-                                        new String[]{Manifest.permission.WRITE_CALENDAR},
+                                        new String[]{permission},
                                         PERMISSION_REQUESTCODE);
                             }
                         })
@@ -95,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 // No explanation needed, we can request the permission.
                 ActivityCompat.requestPermissions(this,
-                        new String[]{Manifest.permission.WRITE_CALENDAR},
+                        new String[]{permission},
                         PERMISSION_REQUESTCODE);
             }
         }
