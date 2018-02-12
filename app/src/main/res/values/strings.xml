@@ -15,4 +15,5 @@
     <string name="permission_explanation">Calendar write permission is required in order to force your device to accept the notification</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
+    <string name="notiflistenerservice">Notification Service</string>
 </resources>

@@ -11,7 +11,7 @@ public class NotificationSenderFactory {
         SMS
     }
 
-    public NotificationSender createInstance(NotificationType type) {
+    public static NotificationSender createInstance(NotificationType type) {
         NotificationSender sender;
         if (type == NotificationType.CALENDAR)
             sender = new CalendarEvent();

@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new NotificationSenderFactory().createInstance(NotificationSenderFactory.NotificationType.CALENDAR)
+                NotificationSenderFactory.createInstance(NotificationSenderFactory.NotificationType.CALENDAR)
                         .send("AAAAAA", MainActivity.this);
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
@@ -50,7 +50,6 @@ public class MainActivity extends AppCompatActivity {
         if (savedInstanceState == null) {
             requestPermission(Manifest.permission.WRITE_CALENDAR);
             requestPermission(Manifest.permission.READ_CALENDAR);
-
             getSupportFragmentManager().beginTransaction().replace(R.id.container, MyPreferenceFragment.newInstance()).commit();
         }
     }
