@@ -12,12 +12,17 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatSpinner;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import java.security.Permission;
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -26,6 +31,9 @@ public class MainActivity extends AppCompatActivity {
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
+
+    @BindView(R.id.apps_list)
+    RecyclerView recyclerView;
 
     private static final int PERMISSION_REQUESTCODE = 142;
 
@@ -41,17 +49,25 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 NotificationSenderFactory.createInstance(NotificationSenderFactory.NotificationType.CALENDAR)
-                        .send("AAAAAA", MainActivity.this);
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                        .send(getString(R.string.test), MainActivity.this);
+                Snackbar.make(view, R.string.test_notification, Snackbar.LENGTH_LONG).show();
             }
         });
 
         if (savedInstanceState == null) {
             requestPermission(Manifest.permission.WRITE_CALENDAR);
             requestPermission(Manifest.permission.READ_CALENDAR);
-            getSupportFragmentManager().beginTransaction().replace(R.id.container, MyPreferenceFragment.newInstance()).commit();
         }
+        setRecyclerView();
+    }
+
+    private void setRecyclerView() {
+
+
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
+        recyclerView.setLayoutManager(mLayoutManager);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.setAdapter(new AppListAdapter(AppRepository.getInstance().getAddedApps()));
     }
 
     @Override

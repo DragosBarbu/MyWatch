@@ -16,7 +16,7 @@ public class AcceptedNotificationFactory {
         notification.setPackageName(packageName);
         notification.setText(text);
         notification.setTitle(title);
-        notification.setValid(shouldUseNotification(packageName));
+        notification.setValid(AppRepository.getInstance().shouldUseNotification(packageName));
         return notification;
     }
 
@@ -29,20 +29,5 @@ public class AcceptedNotificationFactory {
             ai = null;
         }
         return (String) (ai != null ? pm.getApplicationLabel(ai) : "");
-    }
-
-    private static boolean shouldUseNotification(String packageName) {
-        return packageName.equals(ApplicationPackageNames.FACEBOOK_PACK_NAME)
-                || packageName.equals(ApplicationPackageNames.FACEBOOK_MESSENGER_PACK_NAME)
-                || packageName.equals(ApplicationPackageNames.WHATSAPP_PACK_NAME)
-                || packageName.equals(ApplicationPackageNames.INSTAGRAM_PACK_NAME);
-    }
-
-
-    private static final class ApplicationPackageNames {
-        public static final String FACEBOOK_PACK_NAME = "com.facebook.katana";
-        public static final String FACEBOOK_MESSENGER_PACK_NAME = "com.facebook.orca";
-        public static final String WHATSAPP_PACK_NAME = "com.whatsapp";
-        public static final String INSTAGRAM_PACK_NAME = "com.instagram.android";
     }
 }
