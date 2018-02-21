@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.setAdapter(new AppListAdapter(AppRepository.getInstance().getAddedApps()));
+        recyclerView.setAdapter(new AppListAdapter(this, AppRepository.getInstance().getAddedApps()));
     }
 
     @Override
