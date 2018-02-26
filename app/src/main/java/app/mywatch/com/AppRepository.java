@@ -32,15 +32,20 @@ public class AppRepository {
         apps.add(new AppModel(appName, packageName));
     }
 
-    public boolean shouldUseNotification(String packageName) {
-        return apps.contains(new AppModel("", packageName));
-    }
-
 
     private void addDefaultApps() {
+        //FB
         apps.add(new AppModel("Facebook", ApplicationPackageNames.FACEBOOK));
-        apps.add(new AppModel("Facebook Messenger", ApplicationPackageNames.FACEBOOK_MESSENGER));
+        //FB messenger
+        AppModel fbMess = new AppModel("Facebook Messenger", ApplicationPackageNames.FACEBOOK_MESSENGER);
+        ArrayList<String> fbMessIgnore = new ArrayList<>();
+        fbMessIgnore.add("Messenger: chat heads active");
+        fbMessIgnore.add("chat heads active");
+        fbMess.setIgnoreList(fbMessIgnore);
+        apps.add(fbMess);
+        //Whatsapp
         apps.add(new AppModel("Whatsapp", ApplicationPackageNames.WHATSAPP));
+        //Instagram
         apps.add(new AppModel("Instagram", ApplicationPackageNames.INSTAGRAM));
     }
 

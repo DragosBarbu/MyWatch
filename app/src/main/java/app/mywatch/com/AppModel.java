@@ -3,6 +3,9 @@ package app.mywatch.com;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by dragos on 2/19/18.
  */
@@ -11,6 +14,7 @@ public class AppModel implements Parcelable {
 
     private String name;
     private String packageName;
+    private ArrayList<String> ignoreList;
 
     public AppModel(String appName, String packageName) {
         name = appName;
@@ -20,14 +24,16 @@ public class AppModel implements Parcelable {
     protected AppModel(Parcel in) {
         name = in.readString();
         packageName = in.readString();
+        if (in.readByte() == 0x01) {
+            ignoreList = new ArrayList<String>();
+            in.readList(ignoreList, String.class.getClassLoader());
+        } else {
+            ignoreList = null;
+        }
     }
 
     public String getPackageName() {
         return packageName;
-    }
-
-    public void setPackageName(String packageName) {
-        this.packageName = packageName;
     }
 
     public String getName() {
@@ -36,6 +42,14 @@ public class AppModel implements Parcelable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public ArrayList<String> getIgnoreList() {
+        return ignoreList;
+    }
+
+    public void setIgnoreList(ArrayList<String> ignoreList) {
+        this.ignoreList = ignoreList;
     }
 
     @Override
@@ -56,6 +70,12 @@ public class AppModel implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(name);
         dest.writeString(packageName);
+        if (ignoreList == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeList(ignoreList);
+        }
     }
 
     @SuppressWarnings("unused")
