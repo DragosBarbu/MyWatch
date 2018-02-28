@@ -2,7 +2,6 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/two_line_item"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="?selectableItemBackground"
@@ -41,6 +40,7 @@
             android:id="@+id/app_name"
             style="@style/TextAppearance.AppCompat.Body2"
             android:layout_width="wrap_content"
+            android:textColor="@color/text_main"
             android:layout_height="wrap_content"
             android:singleLine="true" />
 
@@ -48,6 +48,7 @@
             android:id="@+id/app_package_name"
             style="@style/TextAppearance.AppCompat.Body1"
             android:layout_width="wrap_content"
+            android:textColor="@color/text_secondary"
             android:layout_height="wrap_content"
             android:singleLine="true" />
     </LinearLayout>

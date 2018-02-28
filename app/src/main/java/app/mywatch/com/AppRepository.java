@@ -42,6 +42,7 @@ public class AppRepository {
         fbMessIgnore.add("Messenger: chat heads active");
         fbMessIgnore.add("chat heads active");
         fbMess.setIgnoreList(fbMessIgnore);
+        fbMess.setAllowNotifications(true);
         apps.add(fbMess);
         //Whatsapp
         apps.add(new AppModel("Whatsapp", ApplicationPackageNames.WHATSAPP));

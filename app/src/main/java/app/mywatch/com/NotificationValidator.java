@@ -31,6 +31,11 @@ public class NotificationValidator {
         message = message.toLowerCase().trim();
 
         if (appModel != null) {
+            // if app does not allow notifications return false
+            if (!appModel.getAllowNotifications())
+                return false;
+
+            //if the ignore list contains a string that matches the notification is not valid
             if (appModel.getIgnoreList() != null)
                 for (String str : appModel.getIgnoreList()) {
                     str = str.toLowerCase().trim();
@@ -38,12 +43,10 @@ public class NotificationValidator {
                     if (str.substring(0, shortest).equals(message.substring(0, shortest))) {
                         isValid = false;
                         break;
-                    } else
-                        isValid = true;
+                    } else isValid = true;
                 }
             else isValid = true;
-        } else
-            isValid = false;
+        } else isValid = false;
         return isValid;
     }
 }

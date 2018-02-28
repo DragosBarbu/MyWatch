@@ -2,12 +2,18 @@ package app.mywatch.com;
 
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
-import android.media.Image;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -23,6 +29,12 @@ public class AppDetailsActivity extends AppCompatActivity {
     @BindView(R.id.details_title)
     TextView titleText;
 
+    @BindView(R.id.details_ignore_list)
+    RecyclerView ignoreRecycler;
+
+    @BindView(R.id.details_fab)
+    FloatingActionButton fab;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,10 +42,12 @@ public class AppDetailsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_details);
         ButterKnife.bind(this);
 
-        setupViews();
+        AppModel appModel = getIntent().getParcelableExtra(APP_MODEL);
+        setupViews(appModel);
     }
 
-    private void setupViews() {
+
+    private void setupViews(AppModel appModel) {
         AppModel model = getIntent().getParcelableExtra(APP_MODEL);
 
         titleText.setText(model.getName());
@@ -44,6 +58,10 @@ public class AppDetailsActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
+        ignoreRecycler.setLayoutManager(mLayoutManager);
+        ignoreRecycler.setItemAnimator(new DefaultItemAnimator());
+        ignoreRecycler.setAdapter(new IgnoreNotifTextAdapter(appModel));
     }
 
     @Override

@@ -15,6 +15,7 @@ public class AppModel implements Parcelable {
     private String name;
     private String packageName;
     private ArrayList<String> ignoreList;
+    private boolean allowNotifications;
 
     public AppModel(String appName, String packageName) {
         name = appName;
@@ -30,6 +31,7 @@ public class AppModel implements Parcelable {
         } else {
             ignoreList = null;
         }
+        allowNotifications = in.readByte() != 0x00;
     }
 
     public String getPackageName() {
@@ -50,6 +52,14 @@ public class AppModel implements Parcelable {
 
     public void setIgnoreList(ArrayList<String> ignoreList) {
         this.ignoreList = ignoreList;
+    }
+
+    public boolean getAllowNotifications() {
+        return allowNotifications;
+    }
+
+    public void setAllowNotifications(Boolean allowNotifications) {
+        this.allowNotifications = allowNotifications;
     }
 
     @Override
@@ -76,6 +86,7 @@ public class AppModel implements Parcelable {
             dest.writeByte((byte) (0x01));
             dest.writeList(ignoreList);
         }
+        dest.writeByte((byte) (allowNotifications ? 0x01 : 0x00));
     }
 
     @SuppressWarnings("unused")
