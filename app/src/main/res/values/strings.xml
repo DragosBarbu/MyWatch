@@ -21,4 +21,7 @@
     <string name="app_package">App package</string>
     <string name="allow_notifications">Allow notifications</string>
     <string name="notifications_to_ignore">Notifications to ignore</string>
+    <string name="add_text_warning">Adding a text to the ignore list will ignore all notifications which start with this specific text.</string>
+    <string name="add_text_title">Add to ignore list</string>
+    <string name="add">Add</string>
 </resources>

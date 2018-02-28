@@ -50,6 +50,10 @@ public class AppRepository {
         apps.add(new AppModel("Instagram", ApplicationPackageNames.INSTAGRAM));
     }
 
+    public void updateAppModel(AppModel appModel) {
+
+    }
+
     private static final class ApplicationPackageNames {
         public static final String FACEBOOK = "com.facebook.katana";
         public static final String FACEBOOK_MESSENGER = "com.facebook.orca";

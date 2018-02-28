@@ -1,24 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/two_line_item"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@android:color/white"
-    android:clickable="true"
-    android:foreground="?attr/selectableItemBackground"
-    android:gravity="center_vertical"
-    android:minHeight="48dp"
-    android:paddingEnd="?listPreferredItemPaddingRight"
-    android:paddingStart="?listPreferredItemPaddingLeft">
+    android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/ignore_text"
-        style="@style/TextAppearance.AppCompat.Body2"
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:id="@+id/removable_background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorAccentDark">
+
+        <ImageView
+            android:id="@+id/delete_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="16dp"
+            android:src="@drawable/ic_swipe_delete"
+            android:tint="@android:color/white" />
+
+    </RelativeLayout>
+
+    <FrameLayout
+        android:id="@+id/removable_foreground"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:singleLine="true"
-        android:textColor="@color/text_main" />
+        android:layout_gravity="center_vertical"
+        android:background="@android:color/white"
+        android:minHeight="48dp"
+        android:paddingEnd="?listPreferredItemPaddingRight"
+        android:paddingStart="?listPreferredItemPaddingLeft">
 
-</LinearLayout>
+        <TextView
+            android:id="@+id/ignore_text"
+            style="@style/TextAppearance.AppCompat.Body2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:singleLine="true"
+            android:textColor="@color/text_main" />
+
+    </FrameLayout>
+
+
+</FrameLayout>

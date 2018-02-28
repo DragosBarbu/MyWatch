@@ -101,4 +101,10 @@ public class AppModel implements Parcelable {
             return new AppModel[size];
         }
     };
+
+    public void addToIgnoreList(String text) {
+        if (ignoreList == null)
+            ignoreList = new ArrayList<>();
+        ignoreList.add(text);
+    }
 }

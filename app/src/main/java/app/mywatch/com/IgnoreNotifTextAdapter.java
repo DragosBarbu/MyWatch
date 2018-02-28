@@ -22,12 +22,10 @@ public class IgnoreNotifTextAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     private static final int TYPE_HEADER = 0;
     private static final int TYPE_ITEM = 1;
 
-    private List<String> data;
     private AppModel appModel;
 
     public IgnoreNotifTextAdapter(AppModel appModel) {
         this.appModel = appModel;
-        data = appModel.getIgnoreList();
     }
 
     @Override
@@ -52,7 +50,7 @@ public class IgnoreNotifTextAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
 
         if (holder instanceof IgnoreVH)
-            ((IgnoreVH) holder).textView.setText(data.get(position - 1));
+            ((IgnoreVH) holder).textView.setText(appModel.getIgnoreList().get(position - 1));
 
         else if (holder instanceof HeaderVH) {
             //cast holder to VHHeader and set data for header.
@@ -65,7 +63,7 @@ public class IgnoreNotifTextAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
     @Override
     public int getItemCount() {
-        return data != null ? data.size() + 1 : 1;
+        return appModel.getIgnoreList() != null ? appModel.getIgnoreList().size() + 1 : 1;
     }
 
     @Override
@@ -88,7 +86,7 @@ public class IgnoreNotifTextAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         }
     }
 
-    class IgnoreVH extends RecyclerView.ViewHolder {
+    class IgnoreVH extends RemovableViewHolder {
         @BindView(R.id.ignore_text)
         TextView textView;
 
