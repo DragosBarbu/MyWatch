@@ -57,8 +57,8 @@ public class AppListAdapter extends RecyclerView.Adapter<AppListAdapter.AppViewH
                 intent.putExtra(AppDetailsActivity.APP_MODEL, model);
 
 
-                Pair<View, String> p1 = Pair.create((View)holder.appIcon, "appicon");
-                Pair<View, String> p2 = Pair.create((View)holder.name, "apptitle");
+                Pair<View, String> p1 = Pair.create((View) holder.appIcon, "appicon");
+                Pair<View, String> p2 = Pair.create((View) holder.name, "apptitle");
                 ActivityOptionsCompat options = ActivityOptionsCompat.
                         makeSceneTransitionAnimation(activity, p1, p2);
 

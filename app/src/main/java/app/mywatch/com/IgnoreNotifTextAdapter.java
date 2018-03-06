@@ -4,6 +4,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -12,6 +13,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnCheckedChanged;
 
 /**
  * Created by dragos on 2/26/18.
@@ -23,6 +25,7 @@ public class IgnoreNotifTextAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     private static final int TYPE_ITEM = 1;
 
     private AppModel appModel;
+    private boolean ignoreCheckedChange = false;
 
     public IgnoreNotifTextAdapter(AppModel appModel) {
         this.appModel = appModel;
@@ -55,7 +58,9 @@ public class IgnoreNotifTextAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         else if (holder instanceof HeaderVH) {
             //cast holder to VHHeader and set data for header.
             HeaderVH header = (HeaderVH) holder;
+            ignoreCheckedChange = true;
             header.allowNotifications.setChecked(appModel.getAllowNotifications());
+            ignoreCheckedChange = false;
             header.packageName.setText(appModel.getPackageName());
         }
 
@@ -83,6 +88,14 @@ public class IgnoreNotifTextAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         public HeaderVH(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+        }
+
+        @OnCheckedChanged(R.id.header_switch)
+        public void allowNotificationChanged(CompoundButton button, boolean checked) {
+            if (ignoreCheckedChange)
+                return;
+            appModel.setAllowNotifications(checked);
+            AppRepository.getInstance().updateAppModel(appModel);
         }
     }
 
