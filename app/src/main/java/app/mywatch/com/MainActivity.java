@@ -1,7 +1,9 @@
 package app.mywatch.com;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -16,9 +18,13 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.EditText;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 
 import java.security.Permission;
 import java.util.ArrayList;
@@ -26,8 +32,9 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements AppRepository.AppDataChangedListener {
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -36,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
     RecyclerView recyclerView;
 
     private static final int PERMISSION_REQUESTCODE = 142;
+    AppListAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,16 +52,6 @@ public class MainActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                NotificationSenderFactory.createInstance(NotificationSenderFactory.NotificationType.CALENDAR)
-                        .send(getString(R.string.test), MainActivity.this);
-                Snackbar.make(view, R.string.test_notification, Snackbar.LENGTH_LONG).show();
-            }
-        });
-
         if (savedInstanceState == null) {
             requestPermission(Manifest.permission.WRITE_CALENDAR);
             requestPermission(Manifest.permission.READ_CALENDAR);
@@ -61,13 +59,24 @@ public class MainActivity extends AppCompatActivity {
         setRecyclerView();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        AppRepository.getInstance().addListener(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        AppRepository.getInstance().removeListener(this);
+    }
+
     private void setRecyclerView() {
-
-
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.setAdapter(new AppListAdapter(this, AppRepository.getInstance().getAddedApps()));
+        adapter = new AppListAdapter(this, AppRepository.getInstance().getAddedApps());
+        recyclerView.setAdapter(adapter);
     }
 
     @Override
@@ -80,7 +89,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.action_settings) return true;
+        if (id == R.id.action_send_test) {
+            sendTestNotification();
+            return true;
+        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -120,5 +132,63 @@ public class MainActivity extends AppCompatActivity {
                         PERMISSION_REQUESTCODE);
             }
         }
+    }
+
+    private void sendTestNotification() {
+        NotificationSenderFactory.createInstance(NotificationSenderFactory.NotificationType.CALENDAR)
+                .send(getString(R.string.test), MainActivity.this);
+        Snackbar.make(recyclerView, R.string.test_notification, Snackbar.LENGTH_LONG).show();
+    }
+
+    private void addAppModel(String packageName) {
+        if (packageName != null)
+            packageName = packageName.trim();
+        if (TextUtils.isEmpty(packageName))
+            return;
+
+        String appName = getAppName(packageName);
+        if (appName == null) {
+            // show error?
+            appName = packageName;
+        }
+        AppRepository.getInstance().addApp(appName, packageName);
+    }
+
+
+    @OnClick(R.id.fab)
+    public void fabClick(View view) {
+        FrameLayout frame = new FrameLayout(MainActivity.this);
+        final EditText edittext = new EditText(MainActivity.this);
+        frame.addView(edittext);
+        ViewHelper.setMargins(edittext, 24, 8, 24, 8);
+
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.add_app)
+                .setMessage(R.string.add_app_text)
+                .setView(frame)
+                .setPositiveButton(R.string.add, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        addAppModel(edittext.getText().toString());
+                    }
+                })
+                .setNegativeButton(R.string.cancel, null)
+                .show();
+    }
+
+    public String getAppName(String packageName) {
+        try {
+            PackageManager packageManager = getPackageManager();
+            ApplicationInfo info = packageManager.getApplicationInfo(packageName, PackageManager.GET_META_DATA);
+            String appName = (String) packageManager.getApplicationLabel(info);
+            return appName;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    public void onAppAdded(AppModel appModel) {
+        adapter.notifyItemChanged(AppRepository.getInstance().getAddedApps().size());
     }
 }
