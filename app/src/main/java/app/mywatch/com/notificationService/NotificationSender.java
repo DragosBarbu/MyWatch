@@ -1,4 +1,4 @@
-package app.mywatch.com;
+package app.mywatch.com.notificationService;
 
 import android.content.ContentResolver;
 import android.content.Context;

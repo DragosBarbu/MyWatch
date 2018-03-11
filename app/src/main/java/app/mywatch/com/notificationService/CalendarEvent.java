@@ -1,24 +1,21 @@
-package app.mywatch.com;
+package app.mywatch.com.notificationService;
 
 import android.Manifest;
-import android.accounts.Account;
-import android.accounts.AccountManager;
 import android.annotation.SuppressLint;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.Debug;
 import android.os.Handler;
 import android.provider.CalendarContract;
 import android.support.v4.app.ActivityCompat;
 
-import java.io.Console;
 import java.util.Calendar;
 import java.util.TimeZone;
+
+import app.mywatch.com.R;
 
 /**
  * Created by dragos on 1/7/18.

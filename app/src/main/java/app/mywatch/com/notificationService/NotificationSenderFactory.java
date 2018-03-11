@@ -1,4 +1,4 @@
-package app.mywatch.com;
+package app.mywatch.com.notificationService;
 
 /**
  * Created by dragos on 1/8/18.

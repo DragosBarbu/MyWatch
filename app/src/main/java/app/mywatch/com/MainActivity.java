@@ -1,6 +1,7 @@
 package app.mywatch.com;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
@@ -8,7 +9,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -25,6 +25,7 @@ import android.widget.FrameLayout;
 import java.util.List;
 
 import app.mywatch.com.models.AppModel;
+import app.mywatch.com.notificationService.NotificationSenderFactory;
 import app.mywatch.com.repos.AppRepository;
 import bolts.Continuation;
 import bolts.Task;
@@ -42,6 +43,9 @@ public class MainActivity extends AppCompatActivity {
 
     private static final int PERMISSION_REQUESTCODE = 142;
     AppListAdapter adapter;
+    String[] permissions = new String[]{
+            Manifest.permission.WRITE_CALENDAR,
+            Manifest.permission.READ_CALENDAR};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,9 +55,9 @@ public class MainActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
 
-        if (savedInstanceState == null) {
-            requestPermission(Manifest.permission.WRITE_CALENDAR);
-            requestPermission(Manifest.permission.READ_CALENDAR);
+
+        if (!hasPermissions(this, permissions)) {
+            ActivityCompat.requestPermissions(this, permissions, PERMISSION_REQUESTCODE);
         }
         AppRepository.getInstance().getAllAppsAsync(this).continueWith(new Continuation<List<AppModel>, Void>() {
             @Override
@@ -77,7 +81,6 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
@@ -98,36 +101,37 @@ public class MainActivity extends AppCompatActivity {
             for (int i = 0; i < permissions.length; i++) {
                 String permission = permissions[i];
                 int grantResult = grantResults[i];
-                if (permission.equals(Manifest.permission.WRITE_CALENDAR) && grantResult != PackageManager.PERMISSION_GRANTED)
-                    requestPermission(Manifest.permission.WRITE_CALENDAR);
-                if (permission.equals(Manifest.permission.READ_CALENDAR) && grantResult != PackageManager.PERMISSION_GRANTED)
-                    requestPermission(Manifest.permission.READ_CALENDAR);
+                if (grantResult == PackageManager.PERMISSION_DENIED) {
+                    showExplanationDialog();
+                    break;
+                }
             }
         }
     }
 
-    private void requestPermission(final String permission) {
-        if (ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
-            // Should we show an explanation?
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this, permission)) {
-                new AlertDialog.Builder(MainActivity.this)
-                        .setMessage(R.string.permission_explanation)
-                        .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                ActivityCompat.requestPermissions(MainActivity.this,
-                                        new String[]{permission},
-                                        PERMISSION_REQUESTCODE);
-                            }
-                        })
-                        .setNegativeButton(R.string.cancel, null).show();
-            } else {
-                // No explanation needed, we can request the permission.
-                ActivityCompat.requestPermissions(this,
-                        new String[]{permission},
-                        PERMISSION_REQUESTCODE);
+    private void showExplanationDialog() {
+        new AlertDialog.Builder(MainActivity.this)
+                .setMessage(R.string.permission_explanation)
+                .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        ActivityCompat.requestPermissions(MainActivity.this, permissions, PERMISSION_REQUESTCODE);
+                    }
+                })
+                .setNegativeButton(R.string.cancel, null)
+                .show();
+    }
+
+
+    public static boolean hasPermissions(Context context, String... permissions) {
+        if (context != null && permissions != null) {
+            for (String permission : permissions) {
+                if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+                    return false;
+                }
             }
         }
+        return true;
     }
 
     private void sendTestNotification() {

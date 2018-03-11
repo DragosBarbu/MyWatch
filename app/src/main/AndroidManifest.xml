@@ -29,7 +29,7 @@
             android:theme="@style/AppTheme.NoActionBar" />
 
         <service
-            android:name=".AndroidNotificationListener"
+            android:name=".notificationService.AndroidNotificationListener"
             android:label="@string/notiflistenerservice"
             android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
             <intent-filter>
