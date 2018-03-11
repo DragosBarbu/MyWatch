@@ -1,15 +1,19 @@
 package app.mywatch.com;
 
 import android.Manifest;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -71,8 +75,21 @@ public class MainActivity extends AppCompatActivity {
                 return null;
             }
         });
+    }
 
-
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (!checkSubscriptionToNotifications())
+            ViewHelper.getSnackbar(recyclerView, getString(R.string.permission_read_notifications), ViewHelper.SNACKBAR_TYPE.ERROR, Snackbar.LENGTH_INDEFINITE)
+                    .setAction(R.string.fix, new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Intent intent = new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS");
+                            startActivity(intent);
+                        }
+                    })
+                    .show();
     }
 
     private void setRecyclerView(List<AppModel> apps) {
@@ -230,4 +247,12 @@ public class MainActivity extends AppCompatActivity {
         prefs.edit().putInt(SHARED_PREFFERENCE_VERSION_CODE_KEY, currentVersionCode).apply();
     }
 
+    private boolean checkSubscriptionToNotifications() {
+        boolean hasPermission = false;
+        for (String service : NotificationManagerCompat.getEnabledListenerPackages(this)) {
+            if (service.equals(getPackageName()))
+                hasPermission = true;
+        }
+        return hasPermission;
+    }
 }

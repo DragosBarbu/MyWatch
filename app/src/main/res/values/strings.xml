@@ -27,4 +27,6 @@
     <string name="add_app">Add application</string>
     <string name="add_app_text">Please add the package name of the application you wish to get notifications for. \neg. com.android.vending for the Play Store</string>
     <string name="action_send_test_notification">Send test notification</string>
+    <string name="permission_read_notifications">The app cannot read notifications. Please allow access</string>
+    <string name="fix">Fix</string>
 </resources>

@@ -94,17 +94,6 @@ public class AppListAdapter extends RecyclerView.Adapter<AppListAdapter.AppViewH
             } catch (PackageManager.NameNotFoundException e) {
                 e.printStackTrace();
             }
-
         }
-
-//        @OnClick(R.id.two_line_item)
-//        void onItemClick(int position) {
-//            Intent intent = new Intent(this, AppDetailsActivity.class);
-////        intent.putExtra(AppDetailsActivity.APP_MODEL, apps.get(position));
-////        ActivityOptionsCompat options = ActivityOptionsCompat.
-////                makeSceneTransitionAnimation(this, (View)ivProfile, "profile");
-//            startActivity(intent);//, options.toBundle());
-//        }
-
     }
 }
