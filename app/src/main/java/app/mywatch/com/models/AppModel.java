@@ -30,6 +30,7 @@ public class AppModel implements Parcelable {
     public AppModel(String name, String packageName) {
         this.name = name;
         this.packageName = packageName;
+        this.allowNotifications = true;
     }
 
     @Ignore

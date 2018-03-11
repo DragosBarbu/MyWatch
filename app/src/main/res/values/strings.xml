@@ -29,4 +29,5 @@
     <string name="action_send_test_notification">Send test notification</string>
     <string name="permission_read_notifications">The app cannot read notifications. Please allow access</string>
     <string name="fix">Fix</string>
+    <string name="app_not_found">App not found</string>
 </resources>

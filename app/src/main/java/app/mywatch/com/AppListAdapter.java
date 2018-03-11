@@ -92,7 +92,7 @@ public class AppListAdapter extends RecyclerView.Adapter<AppListAdapter.AppViewH
                 Drawable icon = name.getContext().getPackageManager().getApplicationIcon(appModel.getPackageName());
                 appIcon.setImageDrawable(icon);
             } catch (PackageManager.NameNotFoundException e) {
-                e.printStackTrace();
+                packageName.setText(String.format("%s (%s)", appModel.getPackageName(), activity.getString(R.string.app_not_found)));
             }
         }
     }
