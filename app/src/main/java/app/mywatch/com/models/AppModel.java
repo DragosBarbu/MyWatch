@@ -1,27 +1,38 @@
-package app.mywatch.com;
+package app.mywatch.com.models;
 
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
+import android.arch.persistence.room.PrimaryKey;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by dragos on 2/19/18.
  */
-
+@Entity
 public class AppModel implements Parcelable {
 
+    @ColumnInfo(name = "name")
     private String name;
+    @PrimaryKey
+    @NonNull
+    @ColumnInfo(name = "package_name")
     private String packageName;
+    @ColumnInfo(name = "ignore_list")
     private ArrayList<String> ignoreList;
+    @ColumnInfo(name = "allow_notifications")
     private boolean allowNotifications;
 
-    public AppModel(String appName, String packageName) {
-        name = appName;
+    public AppModel(String name, String packageName) {
+        this.name = name;
         this.packageName = packageName;
     }
 
+    @Ignore
     protected AppModel(Parcel in) {
         name = in.readString();
         packageName = in.readString();

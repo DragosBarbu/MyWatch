@@ -1,5 +1,6 @@
 package app.mywatch.com;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,9 +9,8 @@ import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import app.mywatch.com.models.AppModel;
+import app.mywatch.com.repos.AppRepository;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnCheckedChanged;
@@ -26,9 +26,11 @@ public class IgnoreNotifTextAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
     private AppModel appModel;
     private boolean ignoreCheckedChange = false;
+    private Context context;
 
-    public IgnoreNotifTextAdapter(AppModel appModel) {
+    public IgnoreNotifTextAdapter(AppModel appModel, Context context) {
         this.appModel = appModel;
+        this.context = context;
     }
 
     @Override
@@ -95,7 +97,7 @@ public class IgnoreNotifTextAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             if (ignoreCheckedChange)
                 return;
             appModel.setAllowNotifications(checked);
-            AppRepository.getInstance().updateAppModel(appModel);
+            AppRepository.getInstance().updateAppModelAsync(context, appModel);
         }
     }
 

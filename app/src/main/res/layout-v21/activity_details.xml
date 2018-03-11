@@ -45,7 +45,7 @@
                     android:layout_height="40dp"
                     android:scaleType="centerInside"
                     android:transitionName="appicon"
-                    app:srcCompat="@drawable/ic_gesture_tap" />
+                    app:srcCompat="@drawable/ic_no_icon" />
 
                 <TextView
                     android:id="@+id/details_title"
@@ -71,8 +71,8 @@
         android:id="@+id/details_fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:transitionName="fab"
         android:layout_margin="@dimen/fab_margin"
+        android:transitionName="fab"
         app:layout_anchor="@id/details_ignore_list"
         app:layout_anchorGravity="bottom|end"
         app:srcCompat="@drawable/ic_add" />

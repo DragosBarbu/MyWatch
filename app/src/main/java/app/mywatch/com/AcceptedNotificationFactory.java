@@ -16,7 +16,7 @@ public class AcceptedNotificationFactory {
         notification.setPackageName(packageName);
         notification.setText(text);
         notification.setTitle(title);
-        notification.setValid(NotificationValidator.getInstance().isValid(packageName, notification.getDisplayedText()));
+        notification.setValid(NotificationValidator.getInstance().isValid(context,packageName, notification.getDisplayedText()));
         return notification;
     }
 

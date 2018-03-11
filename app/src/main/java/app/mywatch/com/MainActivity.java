@@ -1,19 +1,16 @@
 package app.mywatch.com;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.AppCompatSpinner;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -24,17 +21,18 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 
-import java.security.Permission;
-import java.util.ArrayList;
 import java.util.List;
 
+import app.mywatch.com.models.AppModel;
+import app.mywatch.com.repos.AppRepository;
+import bolts.Continuation;
+import bolts.Task;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class MainActivity extends AppCompatActivity implements AppRepository.AppDataChangedListener {
+public class MainActivity extends AppCompatActivity {
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -56,26 +54,23 @@ public class MainActivity extends AppCompatActivity implements AppRepository.App
             requestPermission(Manifest.permission.WRITE_CALENDAR);
             requestPermission(Manifest.permission.READ_CALENDAR);
         }
-        setRecyclerView();
+        AppRepository.getInstance().getAllAppsAsync(this).continueWith(new Continuation<List<AppModel>, Void>() {
+            @Override
+            public Void then(Task<List<AppModel>> task) throws Exception {
+                if (!task.isFaulted())
+                    setRecyclerView(task.getResult());
+                return null;
+            }
+        });
+
+
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        AppRepository.getInstance().addListener(this);
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        AppRepository.getInstance().removeListener(this);
-    }
-
-    private void setRecyclerView() {
+    private void setRecyclerView(List<AppModel> apps) {
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        adapter = new AppListAdapter(this, AppRepository.getInstance().getAddedApps());
+        adapter = new AppListAdapter(this, apps);
         recyclerView.setAdapter(adapter);
     }
 
@@ -151,7 +146,17 @@ public class MainActivity extends AppCompatActivity implements AppRepository.App
             // show error?
             appName = packageName;
         }
-        AppRepository.getInstance().addApp(appName, packageName);
+        AppRepository.getInstance()
+                .addAppAsync(this, appName, packageName)
+                .continueWith(
+                        new Continuation<Void, Void>() {
+                            @Override
+                            public Void then(Task<Void> task) throws Exception {
+                                adapter.notifyItemChanged(AppRepository.getInstance().getAllApps().size());
+                                return null;
+                            }
+                        }
+                );
     }
 
 
@@ -187,8 +192,4 @@ public class MainActivity extends AppCompatActivity implements AppRepository.App
         }
     }
 
-    @Override
-    public void onAppAdded(AppModel appModel) {
-        adapter.notifyItemChanged(AppRepository.getInstance().getAddedApps().size());
-    }
 }

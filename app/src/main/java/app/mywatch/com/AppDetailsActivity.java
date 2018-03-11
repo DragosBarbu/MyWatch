@@ -4,30 +4,24 @@ import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
-import android.text.Editable;
 import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.Switch;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import app.mywatch.com.models.AppModel;
+import app.mywatch.com.repos.AppRepository;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 
 /**
@@ -71,7 +65,7 @@ public class AppDetailsActivity extends AppCompatActivity implements RecyclerIte
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         ignoreRecycler.setLayoutManager(mLayoutManager);
         ignoreRecycler.setItemAnimator(new DefaultItemAnimator());
-        adapter = new IgnoreNotifTextAdapter(appModel);
+        adapter = new IgnoreNotifTextAdapter(appModel, this);
         ignoreRecycler.setAdapter(adapter);
         ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new RecyclerItemTouchHelper(0, ItemTouchHelper.LEFT, this);
         new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(ignoreRecycler);
@@ -96,7 +90,7 @@ public class AppDetailsActivity extends AppCompatActivity implements RecyclerIte
             return;
         if (appModel != null) {
             appModel.addToIgnoreList(text);
-            AppRepository.getInstance().updateAppModel(appModel);
+            AppRepository.getInstance().updateAppModelAsync(this, appModel);
             adapter.notifyItemInserted(appModel.getIgnoreList().size());
         }
     }
@@ -124,6 +118,7 @@ public class AppDetailsActivity extends AppCompatActivity implements RecyclerIte
     @Override
     public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction, int position) {
         appModel.getIgnoreList().remove(position - 1);
+        AppRepository.getInstance().updateAppModelAsync(this,appModel);
         adapter.notifyItemRemoved(position);
     }
 }

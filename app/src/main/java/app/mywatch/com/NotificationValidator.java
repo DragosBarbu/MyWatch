@@ -1,5 +1,10 @@
 package app.mywatch.com;
 
+import android.content.Context;
+
+import app.mywatch.com.models.AppModel;
+import app.mywatch.com.repos.AppRepository;
+
 /**
  * Created by dragos on 2/26/18.
  */
@@ -17,12 +22,12 @@ public class NotificationValidator {
     private NotificationValidator() {
     }
 
-    public boolean isValid(String packageName, String message) {
+    public boolean isValid(Context context, String packageName, String message) {
 
         AppModel appModel = null;
         boolean isValid = false;
 
-        for (AppModel app : AppRepository.getInstance().getAddedApps())
+        for (AppModel app : AppRepository.getInstance().getAllApps())
             if (app.getPackageName().equals(packageName))
                 appModel = app;
 
