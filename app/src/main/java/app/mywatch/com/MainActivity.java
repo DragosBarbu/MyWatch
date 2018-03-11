@@ -3,6 +3,7 @@ package app.mywatch.com;
 import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -47,6 +48,9 @@ public class MainActivity extends AppCompatActivity {
             Manifest.permission.WRITE_CALENDAR,
             Manifest.permission.READ_CALENDAR};
 
+    private static final String SHARED_PREFFERENCE_NAME = "MyWatchPref";
+    private static final String SHARED_PREFFERENCE_VERSION_CODE_KEY = "version_code";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,10 +59,10 @@ public class MainActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
 
-
         if (!hasPermissions(this, permissions)) {
             ActivityCompat.requestPermissions(this, permissions, PERMISSION_REQUESTCODE);
         }
+        checkFirstRun();
         AppRepository.getInstance().getAllAppsAsync(this).continueWith(new Continuation<List<AppModel>, Void>() {
             @Override
             public Void then(Task<List<AppModel>> task) throws Exception {
@@ -195,6 +199,35 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
             return null;
         }
+    }
+
+    private void checkFirstRun() {
+        final int notAvailable = -1;
+        int currentVersionCode = BuildConfig.VERSION_CODE;
+
+        // Get saved version code
+        SharedPreferences prefs = getSharedPreferences(SHARED_PREFFERENCE_NAME, MODE_PRIVATE);
+        int savedVersionCode = prefs.getInt(SHARED_PREFFERENCE_VERSION_CODE_KEY, notAvailable);
+
+        // Check for first run or upgrade
+        if (currentVersionCode == savedVersionCode) {
+            // normal run
+            return;
+        } else if (savedVersionCode == notAvailable) {
+            //first run
+            AppRepository.getInstance().addDefaultApps(this)
+                    .continueWith(new Continuation<Void, Void>() {
+                        @Override
+                        public Void then(Task<Void> task) throws Exception {
+                            adapter.notifyDataSetChanged();
+                            return null;
+                        }
+                    });
+        } else if (currentVersionCode > savedVersionCode) {
+            // upgrade
+        }
+
+        prefs.edit().putInt(SHARED_PREFFERENCE_VERSION_CODE_KEY, currentVersionCode).apply();
     }
 
 }

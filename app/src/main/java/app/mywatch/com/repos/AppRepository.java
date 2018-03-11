@@ -35,7 +35,6 @@ public class AppRepository {
 
     private AppRepository() {
         apps = new ArrayList<>();
-        addDefaultApps();
     }
 
     public List<AppModel> getAllApps() {
@@ -85,7 +84,7 @@ public class AppRepository {
         });
     }
 
-    private void addDefaultApps() {
+    public Task<Void> addDefaultApps(final Context context) {
         //FB
         apps.add(new AppModel("Facebook", ApplicationPackageNames.FACEBOOK));
         //FB messenger
@@ -100,6 +99,16 @@ public class AppRepository {
         apps.add(new AppModel("Whatsapp", ApplicationPackageNames.WHATSAPP));
         //Instagram
         apps.add(new AppModel("Instagram", ApplicationPackageNames.INSTAGRAM));
+
+        final AppModel[] appsArray = apps.toArray(new AppModel[0]);
+        return Task.callInBackground(new Callable<Void>() {
+            @Override
+            public Void call() throws Exception {
+                AppDatabase.getInstance(context).getAppModelDao().insertAll(appsArray);
+                apps.addAll(AppDatabase.getInstance(context).getAppModelDao().getAll());
+                return null;
+            }
+        });
     }
 
     public Task<Void> updateAppModelAsync(final Context context, final AppModel appModel) {
