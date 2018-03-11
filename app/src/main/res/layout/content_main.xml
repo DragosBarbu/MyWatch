@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:scrollbars="vertical"
+    android:layoutAnimation="@anim/layout_animation_slide_from_right"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="app.mywatch.com.MainActivity"
     tools:showIn="@layout/activity_main">

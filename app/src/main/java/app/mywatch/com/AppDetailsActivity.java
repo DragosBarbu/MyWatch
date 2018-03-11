@@ -18,8 +18,12 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.concurrent.Callable;
+
 import app.mywatch.com.models.AppModel;
 import app.mywatch.com.repos.AppRepository;
+import bolts.Continuation;
+import bolts.Task;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -69,7 +73,6 @@ public class AppDetailsActivity extends AppCompatActivity implements RecyclerIte
         ignoreRecycler.setAdapter(adapter);
         ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new RecyclerItemTouchHelper(0, ItemTouchHelper.LEFT, this);
         new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(ignoreRecycler);
-
     }
 
     @Override
@@ -95,7 +98,7 @@ public class AppDetailsActivity extends AppCompatActivity implements RecyclerIte
         }
     }
 
-    @OnClick(R.id.details_fab)
+    @OnClick(R.id.fab)
     public void fabClick(View view) {
         FrameLayout frameLayout = new FrameLayout(AppDetailsActivity.this);
         final EditText edittext = new EditText(AppDetailsActivity.this);
@@ -118,7 +121,7 @@ public class AppDetailsActivity extends AppCompatActivity implements RecyclerIte
     @Override
     public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction, int position) {
         appModel.getIgnoreList().remove(position - 1);
-        AppRepository.getInstance().updateAppModelAsync(this,appModel);
+        AppRepository.getInstance().updateAppModelAsync(this, appModel);
         adapter.notifyItemRemoved(position);
     }
 }
