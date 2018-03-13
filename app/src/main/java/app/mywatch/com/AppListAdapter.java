@@ -46,7 +46,7 @@ public class AppListAdapter extends RecyclerView.Adapter<AppListAdapter.AppViewH
         final AppModel model = data.get(position);
         holder.bind(model);
 
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
+        holder.viewForeground.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(activity, AppDetailsActivity.class);
@@ -69,7 +69,7 @@ public class AppListAdapter extends RecyclerView.Adapter<AppListAdapter.AppViewH
         return data.size();
     }
 
-    class AppViewHolder extends RecyclerView.ViewHolder {
+    class AppViewHolder extends RemovableViewHolder {
         @BindView(R.id.app_name)
         TextView name;
 
@@ -93,6 +93,7 @@ public class AppListAdapter extends RecyclerView.Adapter<AppListAdapter.AppViewH
                 appIcon.setImageDrawable(icon);
             } catch (PackageManager.NameNotFoundException e) {
                 packageName.setText(String.format("%s (%s)", appModel.getPackageName(), activity.getString(R.string.app_not_found)));
+                appIcon.setImageResource(R.drawable.ic_no_icon);
             }
         }
     }

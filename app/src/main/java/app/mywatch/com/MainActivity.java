@@ -20,6 +20,8 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.helper.ItemTouchHelper;
+import android.support.v7.widget.helper.ItemTouchHelper.SimpleCallback;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.Menu;
@@ -28,6 +30,7 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 
 import java.util.List;
+import java.util.concurrent.Callable;
 
 import app.mywatch.com.models.AppModel;
 import app.mywatch.com.notificationService.NotificationSenderFactory;
@@ -38,7 +41,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements RecyclerItemTouchHelper.RecyclerItemTouchHelperListener {
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -69,9 +72,14 @@ public class MainActivity extends AppCompatActivity {
         checkFirstRun();
         AppRepository.getInstance().getAllAppsAsync(this).continueWith(new Continuation<List<AppModel>, Void>() {
             @Override
-            public Void then(Task<List<AppModel>> task) throws Exception {
+            public Void then(final Task<List<AppModel>> task) throws Exception {
                 if (!task.isFaulted())
-                    setRecyclerView(task.getResult());
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            setRecyclerView(task.getResult());
+                        }
+                    });
                 return null;
             }
         });
@@ -96,8 +104,10 @@ public class MainActivity extends AppCompatActivity {
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        adapter = new AppListAdapter(this, apps);
+        adapter = new AppListAdapter(MainActivity.this, apps);
         recyclerView.setAdapter(adapter);
+        ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new RecyclerItemTouchHelper(0, ItemTouchHelper.LEFT, MainActivity.this);
+        new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(recyclerView);
     }
 
     @Override
@@ -254,5 +264,12 @@ public class MainActivity extends AppCompatActivity {
                 hasPermission = true;
         }
         return hasPermission;
+    }
+
+    @Override
+    public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction, int position) {
+        String pckName = AppRepository.getInstance().getAllApps().get(position).getPackageName();
+        AppRepository.getInstance().removeAppAsync(this, pckName);
+        adapter.notifyItemRemoved(position);
     }
 }

@@ -74,6 +74,7 @@ public class AppRepository {
         if (appModel == null)
             throw new NullPointerException("App model not found");
 
+        apps.remove(appModel);
         final AppModel finalAppModel = appModel;
         return Task.callInBackground(new Callable<Void>() {
             @Override
