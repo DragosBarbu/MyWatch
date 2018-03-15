@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">MyWatch</string>
+    <string name="app_name">HybridWatch+</string>
     <string-array name="listArray">
         <item>Headings</item>
         <item>Headings and Details</item>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="app.mywatch.com">
+    package="com.japoapps.hwplus">
 
     <uses-permission android:name="android.permission.READ_CALENDAR" />
     <uses-permission android:name="android.permission.WRITE_CALENDAR" />
@@ -10,11 +10,10 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".MainActivity"
+            android:name="com.japoapps.hwplus.MainActivity"
             android:label="@string/app_name"
             android:theme="@style/SplashTheme">
             <intent-filter>
@@ -24,12 +23,12 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".AppDetailsActivity"
+            android:name="com.japoapps.hwplus.AppDetailsActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar" />
 
         <service
-            android:name=".notificationService.AndroidNotificationListener"
+            android:name="com.japoapps.hwplus.notificationService.AndroidNotificationListener"
             android:label="@string/notiflistenerservice"
             android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
             <intent-filter>

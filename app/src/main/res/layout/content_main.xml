@@ -8,7 +8,7 @@
     android:scrollbars="vertical"
     android:layoutAnimation="@anim/layout_animation_slide_from_right"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="app.mywatch.com.MainActivity"
+    tools:context="com.japoapps.hwplus.MainActivity"
     tools:showIn="@layout/activity_main">
 
 </android.support.v7.widget.RecyclerView>
